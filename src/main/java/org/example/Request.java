@@ -4,10 +4,10 @@ import packageEnum.Status;
 import java.time.LocalDateTime;
 
 public class Request {
-    private Integer requestId;
-    private Client client;
+
+    private int userId;
+    private int car_id;
     private Status status;
-    private Car car;
     private LocalDateTime createdOn;
     private LocalDateTime completedOn;
     private boolean modifiedRequest;
@@ -15,43 +15,30 @@ public class Request {
     public Request(){
         this.createdOn= LocalDateTime.now();
     }
-    public Request(Integer requestId, Client client, Status status, Car car, LocalDateTime createdOn, LocalDateTime completedOn, boolean modifiedRequest) {
-        this.requestId = requestId;
-        this.client = client;
-        this.status = status;
-        this.car = car;
-        this.createdOn = createdOn;
-        this.completedOn = completedOn;
-        this.modifiedRequest = modifiedRequest;
+
+    public Request(int userId, int car_id, Status status, LocalDateTime createdOn) {
+        this.userId = userId;
+        this.car_id = car_id;
+        this.status = Status.PENDING;
+        this.createdOn = getDateLocalTime();
+        this.completedOn = null;
+        this.modifiedRequest = false;
     }
 
-    @Override
-    public String toString() {
-        return "Request{" +
-                "requestId=" + requestId +
-                ", client=" + client +
-                ", status=" + status +
-                ", car=" + car +
-                ", createdOn=" + createdOn +
-                ", completedOn=" + completedOn +
-                ", modifiedRequest=" + modifiedRequest +
-                '}';
+    public int getUserId() {
+        return userId;
     }
 
-    public Integer getRequestId() {
-        return requestId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public void setRequestId(Integer requestId) {
-        this.requestId = requestId;
+    public int getCar_id() {
+        return car_id;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCar_id(int car_id) {
+        this.car_id = car_id;
     }
 
     public Status getStatus() {
@@ -60,14 +47,6 @@ public class Request {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public Car getCar() {
-        return car;
-    }
-
-    public void setCar(Car car) {
-        this.car = car;
     }
 
     public LocalDateTime getCreatedOn() {
@@ -93,4 +72,33 @@ public class Request {
     public void setModifiedRequest(boolean modifiedRequest) {
         this.modifiedRequest = modifiedRequest;
     }
+
+
+    public LocalDateTime getDateLocalTime(){
+        return LocalDateTime.now();
+    }
+
+
+
+
+
+
+
+    /*
+    @Override
+    public String toString() {
+        return "Request{" +
+                "requestId=" + requestId +
+                ", client=" + client +
+                ", status=" + status +
+                ", car=" + car +
+                ", createdOn=" + createdOn +
+                ", completedOn=" + completedOn +
+                ", modifiedRequest=" + modifiedRequest +
+                '}';
+    }
+*/
+
+
+
 }
