@@ -2,7 +2,7 @@ package org.example;
 import packageEnum.Status;
 
 public class Request {
-
+//
     private Client client;
     private Status status;
     private boolean modifiedRequest;
