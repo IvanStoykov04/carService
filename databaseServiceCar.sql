@@ -7,8 +7,8 @@ CREATE TABLE user (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),  -- Добавено поле за телефон
-    address VARCHAR(255),  -- Добавено поле за адрес
+    phone VARCHAR(20),
+    address VARCHAR(255),
     role ENUM('client', 'admin') NOT NULL DEFAULT 'client'
 );
 
@@ -23,20 +23,20 @@ CREATE TABLE car (
     FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
--- Request table (modified to keep history)
+
 CREATE TABLE request (
     request_id INT AUTO_INCREMENT PRIMARY KEY,
-    car_id INT,  -- Can be NULL to preserve history
-    user_id INT NOT NULL,  -- Links request to user
+    car_id INT,
+    user_id INT NOT NULL,
     status ENUM('pending', 'approved', 'completed', 'rejected') NOT NULL,
     createdOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    completedOn TIMESTAMP NULL,  -- Track completion date
-    modified_request BOOLEAN DEFAULT FALSE,  -- Добавено поле за искане на модификация
-    FOREIGN KEY (car_id) REFERENCES car(car_id) ON DELETE SET NULL,  -- Keep request even if car is deleted
-    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE  -- If user is deleted, requests are also removed
+    completedOn TIMESTAMP NULL,
+    modified_request BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (car_id) REFERENCES car(car_id) ON DELETE SET NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 
--- Services table
+
 CREATE TABLE services (
     services_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE services (
     price DECIMAL(10,2) NOT NULL
 );
 
--- Car Service table
+
 CREATE TABLE carService (
     carService_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE carService (
     phone VARCHAR(20) NOT NULL
 );
 
--- Many-to-Many Relationship: requestServices
+
 CREATE TABLE requestServices (
     request_id INT NOT NULL,
     services_id INT NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE requestServices (
     FOREIGN KEY (services_id) REFERENCES services(services_id) ON DELETE CASCADE
 );
 
--- Many-to-Many Relationship: carService_services
+
 CREATE TABLE carService_services (
     carService_id INT NOT NULL,
     services_id INT NOT NULL,
