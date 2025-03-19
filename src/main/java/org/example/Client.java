@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class Client extends User{
 
+    private int id;
     Scanner input=new Scanner(System.in);
     public ArrayList<Car> listOfCars;
     public ArrayList<Request> listOfRequest;
@@ -17,6 +18,15 @@ public class Client extends User{
         super(name, email, password, phone, address);
         listOfCars=new ArrayList<>();
         listOfRequest=new ArrayList<>();
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
