@@ -5,7 +5,8 @@ public class Main {
 
         System.out.println("you are debil");
 
-
+        System.out.println("ti");
+        System.out.println("az");
 
 
     }
