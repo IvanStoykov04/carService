@@ -1,5 +1,6 @@
 package ConnetctDatabase;
 
+import InterfacePackage.ClientActions;
 import com.mysql.cj.MysqlConnection;
 import org.example.Client;
 
@@ -9,14 +10,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Scanner;
 
-public class ClientRequests {
+public class ClientRequests implements ClientActions {
 
+    Scanner input=new Scanner(System.in);
     Connection connection;
     PreparedStatement ps;
     ResultSet rs;
 
 
-    public void selectAllServices(){
+    @Override
+    public void viewServices(Client client) {
         try{
             connection=ConnectDatabase.connection();
             String sql="SELECT * FROM carservice";
@@ -36,32 +39,8 @@ public class ClientRequests {
         }
     }
 
-
-    public void selectAllCar(Client client){
-        try{
-            connection=ConnectDatabase.connection();
-            String sql="SELECT * FROM car WHERE user_id=?";
-            ps=connection.prepareStatement(sql);
-            ps.setInt(1,client.getId());
-            rs=ps.executeQuery();
-            while(rs.next()){
-                int carId=rs.getInt("car_id");
-                int userId=rs.getInt("user_id");
-                String brand=rs.getString("brand");
-                String model=rs.getString("model");
-                int year=rs.getInt("year");
-                String rgNumber=rs.getString("rg_number");
-                System.out.println("CarId: "+carId+" \nuserId: "+userId+" \nbrand: "+brand+" \nmodel: "+model+" \nyear: "+year+"\nrgNumber: "+rgNumber+"\n" +" -------------------------------------");
-            }
-            System.out.println("Select products is successful");
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-    }
-
-
-
-    public void addCar(Client client, Scanner input){
+    @Override
+    public void addCar(Client client) {
         try{
             connection=ConnectDatabase.connection();
             String sql="INSERT INTO car (user_id,brand,model,year,rg_number) VALUES(?,?,?,?,?)";
@@ -86,8 +65,53 @@ public class ClientRequests {
         }
     }
 
+    @Override
+    public void viewCar(Client client) {
+        boolean flag=false;
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="SELECT * FROM car WHERE user_id=?";
+            ps=connection.prepareStatement(sql);
+            ps.setInt(1,client.getId());
+            rs=ps.executeQuery();
+            while(rs.next()){
+                int carId=rs.getInt("car_id");
+                int userId=rs.getInt("user_id");
+                String brand=rs.getString("brand");
+                String model=rs.getString("model");
+                int year=rs.getInt("year");
+                String rgNumber=rs.getString("rg_number");
+                System.out.println("CarId: "+carId+" \nuserId: "+userId+" \nbrand: "+brand+" \nmodel: "+model+" \nyear: "+year+"\nrgNumber: "+rgNumber+"\n" +" -------------------------------------");
+                flag=true;
+            }
+            //даваме му флаг тук защото дори и да не съществува user с даденото ни id то не хвърля грешка а просто не извежда коли
+            if (flag){
+                System.out.println("Select products is successful");
+            }else{
+                System.out.println("No products for view");
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 
+    @Override
+    public void addRequest(Client client) {
 
+    }
 
+    @Override
+    public void viewRequestHistory(Client client) {
 
+    }
+
+    @Override
+    public void requestModification(Client client) {
+
+    }
+
+    @Override
+    public void updateUserData(Client client) {
+
+    }
 }

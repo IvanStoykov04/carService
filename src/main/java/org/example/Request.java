@@ -2,36 +2,32 @@ package org.example;
 import packageEnum.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Request {
 
-    private int userId;
+    Client client;
+    Car car;
+    ArrayList<Service> listOfServices;
+
     private int car_id;
+    private int services;
     private Status status;
     private LocalDateTime createdOn;
     private LocalDateTime completedOn;
     private boolean modifiedRequest;
 
-    public Request(){
-        this.createdOn= LocalDateTime.now();
-    }
 
-    public Request(int userId, int car_id, Status status, LocalDateTime createdOn) {
-        this.userId = userId;
+    public Request(int car_id,int services) {
         this.car_id = car_id;
+        this.services=services;
         this.status = Status.PENDING;
         this.createdOn = getDateLocalTime();
         this.completedOn = null;
         this.modifiedRequest = false;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public int getCar_id() {
         return car_id;
@@ -39,6 +35,14 @@ public class Request {
 
     public void setCar_id(int car_id) {
         this.car_id = car_id;
+    }
+
+    public int getServices() {
+        return services;
+    }
+
+    public void setServices(int services) {
+        this.services = services;
     }
 
     public Status getStatus() {
@@ -79,25 +83,25 @@ public class Request {
     }
 
 
-
-
-
-
-
     /*
-    @Override
-    public String toString() {
-        return "Request{" +
-                "requestId=" + requestId +
-                ", client=" + client +
-                ", status=" + status +
-                ", car=" + car +
-                ", createdOn=" + createdOn +
-                ", completedOn=" + completedOn +
-                ", modifiedRequest=" + modifiedRequest +
-                '}';
+    public void addServices(Scanner input){
+        int choice=1;
+        System.out.println("Enter choice of services: ");
+        //list of services
+        while(choice!=0){
+            choice= input.nextInt();
+            //Service service=getServiceFromDatabase(choice)-metod който връща service обект po dadeno id(в случая това id е choice) и го записва в листа
+            //listOfServices.add(service);
+        }
     }
 */
+
+
+
+
+
+
+
 
 
 

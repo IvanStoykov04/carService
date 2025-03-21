@@ -4,14 +4,14 @@ public class CarService {
 
     private String name;
     private String location;
-    private String description;
-    private double price;
+    private String email;
+    private String phone;
 
-    public CarService(String name, String location, String description, double price) {
+    public CarService(String name, String location, String email, String phone) {
         this.name = name;
         this.location = location;
-        this.description = description;
-        this.price = price;
+        this.email = email;
+        this.phone = phone;
     }
 
     public String getName() {
@@ -30,22 +30,19 @@ public class CarService {
         this.location = location;
     }
 
-    public String getDescription() {
-        return description;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public double getPrice() {
-        return price;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
-
-
-
 }
