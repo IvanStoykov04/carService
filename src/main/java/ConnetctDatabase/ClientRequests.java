@@ -3,13 +3,16 @@ package ConnetctDatabase;
 import InterfacePackage.ClientActions;
 import com.mysql.cj.MysqlConnection;
 import org.example.Client;
+import org.example.Request;
 import org.example.Service;
+import packageEnum.Status;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.StringReader;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ClientRequests implements ClientActions {
@@ -25,7 +28,7 @@ public class ClientRequests implements ClientActions {
     public Service getService(Client client,int serviceId) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="SELECT FROM services WHERE services_id=?";
+            String sql="SELECT * FROM services WHERE services_id=?";
             ps=connection.prepareStatement(sql);
             ps.setInt(1,serviceId);
             rs=ps.executeQuery();
@@ -124,19 +127,34 @@ public class ClientRequests implements ClientActions {
     }
 
 
-    //da zapylnq i mevdinnata tablica
+    //addRequest, addRequestServices,getRequestFromDatabase,addAllServicesFromRequest вървят заедно
+    //Главния викащ се от потребителя метод е addRequest другите са спомагателни
+    //след като се извика addRequest се създава заявка от потребителя и данните се въвеждат в таблица request
+    //след това с няколко милисекунди закъснение се връща обект заявка по дадения текущ час на създаване
+    //този върна обект се подава на метод addAllServicesFromRequest, който от своя страна извиква метода addRequestServices и въвежда всички услуги за дадената заявка в междинната таблица
+    //Създава се request->взима се този request->записва се списък с услуги->обхожда се списъка и се запълва междинната таблица
+
+
     @Override
     public void addRequest(Client client) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="INSERT INTO request(car_id,user_id,) VALUES (?,?)";
+            String sql="INSERT INTO request(car_id,user_id) VALUES (?,?)";
             ps=connection.prepareStatement(sql);
             //Select car
-            System.out.println("Choose a car: ");
             viewCar(client);
-            int car= input.nextInt();
-            ps.setInt(1,car);
+            System.out.println("Choose a car: ");
+            int carId= input.nextInt();
+            ps.setInt(1,carId);
+            System.out.println("Step 1");
+            System.out.println(client.getId());
             ps.setInt(2,client.getId());
+            System.out.println("Step 2");
+            ps.execute();
+            System.out.println("Step 3");
+            ////////////////////////////////////////////////////////
+            Request request=getRequestFromDatabase();
+            addAllServicesFromRequest(client,request);
             System.out.println("Request is created successfully");
         }catch(Exception e){
             System.out.println(e.getMessage());
@@ -144,6 +162,58 @@ public class ClientRequests implements ClientActions {
     }
 
 
+
+
+
+    @Override
+    public void addRequestServices(Client client,Request request,Service service) {
+        try{
+           connection=ConnectDatabase.connection();
+           String sql="INSERT INTO requestServices(request_id,services_id) VALUES(?,?)";
+           ps=connection.prepareStatement(sql);
+           ps.setInt(1,request.getRequestId());
+           ps.setInt(2,service.getId());
+           ps.execute();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //взимаме заявката която създадохме в дадения момент и връщаме обект от Request за да му добавим после списък с услугите и да извикаме другите два метод addRequestServices,addAllServicesFromRequest
+    public Request getRequestFromDatabase(){
+        try{
+            connection=ConnectDatabase.connection();
+            LocalDateTime now = LocalDateTime.now();
+            Timestamp timestamp = Timestamp.valueOf(now);
+            String sql="SELECT * FROM request WHERE createdOn=?";
+            ps=connection.prepareStatement(sql);
+            ps.setTimestamp(1,timestamp);
+            rs=ps.executeQuery();
+            while(rs.next()){
+                int requestId=rs.getInt("request_id");
+                int carId=rs.getInt("car_id");
+                int userId=rs.getInt("user_id");
+                Status status= Status.valueOf(rs.getString("status"));
+                Timestamp createdOn=rs.getTimestamp("createdOn");
+                Timestamp completedOn=rs.getTimestamp("completedOn");
+                boolean modifiedRequest=rs.getBoolean("modified_request");
+                Request request=new Request(requestId,carId,userId,status,createdOn,completedOn,modifiedRequest);
+                return request;
+            }
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+
+    //добавяме всички записи за дадената заявка с всички нейни услуги в междинната таблица requestServices
+    public void addAllServicesFromRequest(Client client,Request request){
+        ArrayList<Service> services=request.getListOfServices();
+        for (Service service: services) {
+            addRequestServices(client,request,service);
+        }
+    }
 
     @Override
     public void viewRequestHistory(Client client) {
@@ -188,11 +258,15 @@ public class ClientRequests implements ClientActions {
     public void requestModification(Client client) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="UPDATE request SET modified_request=?";
+            String sql="UPDATE request SET modified_request=? WHERE request_id=?";
             ps=connection.prepareStatement(sql);
+            System.out.println("Enter request Id: ");
+            int requestId=input.nextInt();
             ps.setBoolean(1,true);
+            ps.setInt(2,requestId);
             ps.execute();
             System.out.println("Modified request is successful");
+            System.out.println("Wait for a call");
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -229,4 +303,9 @@ public class ClientRequests implements ClientActions {
         System.out.println("You must enter minimum 6 symbols");
         return false;
     }
+
+
+
+
+
 }

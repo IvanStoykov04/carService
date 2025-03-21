@@ -1,6 +1,7 @@
 package InterfacePackage;
 
 import org.example.Client;
+import org.example.Request;
 import org.example.Service;
 
 public interface ClientActions {
@@ -14,6 +15,7 @@ public interface ClientActions {
     void requestModification(Client client);
     void updateUserData(Client client);
     boolean checkPassword(String password);
+    void addRequestServices(Client client, Request request,Service service);
 
 
 }

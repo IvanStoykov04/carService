@@ -26,9 +26,9 @@ CREATE TABLE car (
 
 CREATE TABLE request (
     request_id INT AUTO_INCREMENT PRIMARY KEY,
-    car_id INT,
+    car_id INT NOT NULL,
     user_id INT NOT NULL,
-    status ENUM('pending', 'approved', 'completed', 'rejected') NOT NULL,
+    status ENUM('pending', 'approved', 'completed', 'rejected') NOT NULL DEFAULT 'pending',
     createdOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completedOn TIMESTAMP NULL,
     modified_request BOOLEAN DEFAULT FALSE,
@@ -139,3 +139,4 @@ VALUES
 (18, 'Volvo', 'XC60', 2021, 'BG1616EE'),
 (19, 'Skoda', 'Octavia', 2019, 'BG1818FF'),
 (20, 'Tesla', 'Model 3', 2022, 'BG2020GG');
+

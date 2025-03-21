@@ -94,24 +94,30 @@ public class AuthenticationManager implements AuthenticationManagerI {
             ps=connection.prepareStatement(sql);
             System.out.println("Enter name: ");
             String name=input.next();
-            System.out.println("Enter email: ");
-            String email=input.next();
-            System.out.println("Enter password: ");
-            String password=input.next();
-            System.out.println("Enter phone: ");
-            String phone=input.next();
+            ps.setString(1,name);
+            String email;
+            String password;
+            String phone;
+            do{
+                System.out.println("Enter email: ");
+                email=input.next();
+            }while(!checkEmail(email));
+            ps.setString(2,email);
+
+            do{
+                System.out.println("Enter password: ");
+                password=input.next();
+            }while(!checkPassword(password));
+            ps.setString(3,password);
+
+            do{
+                System.out.println("Enter phone: ");
+                phone=input.next();
+            }while(!checkPhone(phone));
+            ps.setString(4,phone);
+
             System.out.println("Enter address: ");
             String address=input.next();
-            ps.setString(1,name);
-            if(checkEmail(email)){
-                ps.setString(2,email);
-            }
-            if(checkPassword(password)){
-                ps.setString(3,password);
-            }
-            if (checkPhone(phone)){
-                ps.setString(4,phone);
-            }
             ps.setString(5,address);
             ps.execute();
             System.out.println("Register is successful");

@@ -2,6 +2,7 @@ package org.example;
 import ConnetctDatabase.ClientRequests;
 import packageEnum.Status;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -9,23 +10,37 @@ import java.util.Scanner;
 public class Request {
     ArrayList<Service> listOfServices;
 
+    private int requestId;
     private int car_id;
     private int services;
     private Status status;
-    private LocalDateTime createdOn;
-    private LocalDateTime completedOn;
+    private Timestamp createdOn;
+    private Timestamp completedOn;
     private boolean modifiedRequest;
 
 
     public Request(int car_id,int services) {
         this.car_id = car_id;
         this.services=services;
-        this.status = Status.PENDING;
-        this.createdOn = getDateLocalTime();
-        this.completedOn = null;
-        this.modifiedRequest = false;
     }
 
+    public Request(int requestId,int car_id, int services, Status status, Timestamp createdOn, Timestamp completedOn, boolean modifiedRequest) {
+        this.requestId=requestId;
+        this.car_id = car_id;
+        this.services = services;
+        this.status = status;
+        this.createdOn = createdOn;
+        this.completedOn = completedOn;
+        this.modifiedRequest = modifiedRequest;
+    }
+
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
+    }
 
     public int getCar_id() {
         return car_id;
@@ -51,19 +66,19 @@ public class Request {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedOn() {
+    public Timestamp getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
+    public void setCreatedOn(Timestamp createdOn) {
         this.createdOn = createdOn;
     }
 
-    public LocalDateTime getCompletedOn() {
+    public Timestamp getCompletedOn() {
         return completedOn;
     }
 
-    public void setCompletedOn(LocalDateTime completedOn) {
+    public void setCompletedOn(Timestamp completedOn) {
         this.completedOn = completedOn;
     }
 
@@ -80,9 +95,15 @@ public class Request {
         return LocalDateTime.now();
     }
 
+    public ArrayList<Service> getListOfServices() {
+        return listOfServices;
+    }
 
+    public void setListOfServices(ArrayList<Service> listOfServices) {
+        this.listOfServices = listOfServices;
+    }
 
-    public void addServices(Client client,Scanner input){
+    public void addServices(Client client, Scanner input){
         ClientRequests clientRequests=new ClientRequests();
         int choice=1;
         System.out.println("Enter choice of services: ");
@@ -96,6 +117,9 @@ public class Request {
             listOfServices.add(service);
         }
     }
+
+
+
 
 
 
