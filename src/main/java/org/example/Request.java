@@ -1,4 +1,5 @@
 package org.example;
+import ConnetctDatabase.ClientRequests;
 import packageEnum.Status;
 
 import java.time.LocalDateTime;
@@ -6,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Request {
-
-    Client client;
-    Car car;
     ArrayList<Service> listOfServices;
 
     private int car_id;
@@ -83,18 +81,22 @@ public class Request {
     }
 
 
-    /*
-    public void addServices(Scanner input){
+
+    public void addServices(Client client,Scanner input){
+        ClientRequests clientRequests=new ClientRequests();
         int choice=1;
         System.out.println("Enter choice of services: ");
-        //list of services
+        //преглед на всички възможни услуги в базата
+        clientRequests.viewServices(client);
         while(choice!=0){
+            //избор на услуга
             choice= input.nextInt();
-            //Service service=getServiceFromDatabase(choice)-metod който връща service обект po dadeno id(в случая това id е choice) и го записва в листа
-            //listOfServices.add(service);
+            //връщаме обект услуга и я записваме в списък
+            Service service=clientRequests.getService(client,choice);
+            listOfServices.add(service);
         }
     }
-*/
+
 
 
 
