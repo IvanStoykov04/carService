@@ -2,12 +2,14 @@ package InterfacePackage;
 
 import org.example.Admin;
 
+import java.sql.SQLException;
+
 public interface AdminActions {
 
 
     void addServices(Admin admin);
     void deleteServices(Admin admin);
-    void editServices(Admin admin);
+    void editServices(Admin admin) throws SQLException;
 
     void addUser(Admin admin);
     void deleteUser(Admin admin);

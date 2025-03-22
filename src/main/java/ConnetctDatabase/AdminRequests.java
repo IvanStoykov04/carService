@@ -57,7 +57,7 @@ public class AdminRequests implements AdminActions {
     }
 
     @Override
-    public void editServices(Admin admin) {
+    public void editServices(Admin admin) throws SQLException {
         try{
             connection=ConnectDatabase.connection();
             String sql="UPDATE services SET price=? WHERE services_id=?";
@@ -73,8 +73,12 @@ public class AdminRequests implements AdminActions {
             System.out.println("Update service is successful");
         }catch (Exception e){
             System.out.println(e.getMessage());
+        }finally {
+            connection.close();
+            ps.close();
         }
     }
+
 
     @Override
     public void addUser(Admin admin) {

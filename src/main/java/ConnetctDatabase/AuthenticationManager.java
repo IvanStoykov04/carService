@@ -11,6 +11,7 @@ import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -179,7 +180,7 @@ public class AuthenticationManager implements AuthenticationManagerI {
 
 
 
-    public void adminMenu(Admin admin){
+    public void adminMenu(Admin admin) throws SQLException {
         AdminRequests adminRequest=new AdminRequests();
         System.out.println("Enter option:\n" +
                 "1-addServices\n" +
