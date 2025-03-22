@@ -136,7 +136,7 @@ public class AdminRequests implements AdminActions {
     public void deleteUser(Admin admin) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="DELETE * FROM user WHERE user_id=?";
+            String sql="DELETE FROM user WHERE user_id=?";
             ps=connection.prepareStatement(sql);
             System.out.println("ENter user id: ");
             int userId= input.nextInt();
@@ -403,16 +403,15 @@ public class AdminRequests implements AdminActions {
     public void viewAllServices(Admin admin) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="SELECT * FROM carservice";
+            String sql="SELECT * FROM services";
             ps=connection.prepareStatement(sql);
             rs= ps.executeQuery();
             while(rs.next()){
-                int carServiceId=rs.getInt("carService_id");
-                String carName=rs.getString("name");
-                String location=rs.getString("location");
-                String phone=rs.getString("phone");
-                String email=rs.getString("email");
-                System.out.println("CarId: "+carServiceId+" \nName: "+carName+" \nlocation: "+location+" \nphone: "+phone+" \nemail: "+email+"\n -------------------------------------");
+                int servicesId=rs.getInt("services_id");
+                String name=rs.getString("name");
+                String description=rs.getString("description");
+                double price=rs.getDouble("price");
+                System.out.println("serviceId: "+servicesId+"\nname: "+name+" \ndescription: "+description+" \nprice: "+price);
             }
             System.out.println("Select products is successful");
         }catch (Exception e){
