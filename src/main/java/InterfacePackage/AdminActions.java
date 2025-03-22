@@ -24,6 +24,15 @@ public interface AdminActions {
     void deleteCar(Admin admin);
     void editCar(Admin admin);
 
+    boolean checkPhone(String phone);
+    boolean checkEmail(String email);
+    boolean checkPassword(String password);
+
+    void viewAllServices(Admin admin);
+
+    void viewAllCar(Admin admin);
+
+
 
 
 }
