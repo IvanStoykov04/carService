@@ -32,6 +32,10 @@ public interface AdminActions {
 
     void viewAllCar(Admin admin);
 
+    void deleteRequestService(Admin admin,int requestId);
+    void viewAllCarServices(Admin admin);
+    void viewAllRequest(Admin admin);
+
 
 
 

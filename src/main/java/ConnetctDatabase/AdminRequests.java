@@ -3,12 +3,14 @@ package ConnetctDatabase;
 import InterfacePackage.AdminActions;
 import org.example.Admin;
 import org.example.Service;
+import packageEnum.Status;
 import packageEnum.UserType;
 
 import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.Scanner;
 
 public class AdminRequests implements AdminActions {
@@ -201,22 +203,103 @@ public class AdminRequests implements AdminActions {
 
     @Override
     public void deleteCarService(Admin admin) {
-
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="DELETE * FROM carService WHERE carService_id=?";
+            ps=connection.prepareStatement(sql);
+            viewAllCarServices(admin);
+            System.out.println("Choose car service: ");
+            int carServiceId= input.nextInt();
+            ps.setInt(1,carServiceId);
+            ps.execute();
+            System.out.println("Delete car service is successful");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void editCarService(Admin admin) {
-
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="UPDATE carService SET phone WHERE carService_id=?";
+            ps=connection.prepareStatement(sql);
+            viewAllCarServices(admin);
+            System.out.println("Choose car service: ");
+            int carServiceId= input.nextInt();
+            String phone;
+            do{
+                System.out.println("Enter new phone: ");
+                phone=input.next();
+            }while(!checkPhone(phone));
+            ps.setString(1,phone);
+            ps.setInt(2,carServiceId);
+            ps.execute();
+            System.out.println("Update car service is successful ");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void deleteRequest(Admin admin) {
-
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="DELETE * FROM request WHERE request_id=?";
+            ps= connection.prepareStatement(sql);
+            viewAllRequest(admin);
+            System.out.println("Choose request: ");
+            int requestId= input.nextInt();
+            ps.execute();
+            System.out.println("Delete request is successful");
+            //тук се извиква след това директно и deleteRequestService тъй като тя е междинна таблица и щом трием request я трием отсякъде
+            deleteRequestService(admin,requestId);
+            System.out.println("All delete request methods work correct");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void modifyRequest(Admin admin) {
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="UPDATE request SET status=? WHERE request_id=?";
+            ps= connection.prepareStatement(sql);
+            viewAllRequest(admin);
+            System.out.println("Choose request: ");
+            int requestId= input.nextInt();
+            System.out.println("Enter new status for request: "+"\n1- "+Status.APPROVED+"\n2- "+Status.COMPLETED+"\n3- "+Status.REJECTED);
+            int choice= input.nextInt();
+            if (choice==1){
+                ps.setString(1,Status.APPROVED.toString());
+            } else if (choice==2){
+                ps.setString(1,Status.COMPLETED.toString());
+            } else if (choice==3) {
+                ps.setString(1,Status.REJECTED.toString());
+            }else{
+                ps.setString(1,Status.PENDING.toString());
+            }
+            ps.setInt(2,requestId);
+            ps.execute();
+            System.out.println("Update request is successful");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
 
+    @Override
+    public void deleteRequestService(Admin admin,int requestId) {
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="DELETE * FROM requestServices WHERE request_id=?";
+            ps= connection.prepareStatement(sql);
+            ps.setInt(1,requestId);
+            ps.execute();
+            System.out.println("Delete from requestService is successful");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -354,6 +437,53 @@ public class AdminRequests implements AdminActions {
                 System.out.println("CarId: "+carId+" \nuserId: "+userId+" \nbrand: "+brand+" \nmodel: "+model+" \nyear: "+year+"\nrgNumber: "+rgNumber+"\n" +" -------------------------------------");
             }
         }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
+    @Override
+    public void viewAllCarServices(Admin admin) {
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="SELECT * FROM carService";
+            ps= connection.prepareStatement(sql);
+            rs=ps.executeQuery();
+            while(rs.next()){
+                int carServiceId=rs.getInt("carService_id");
+                String name=rs.getString("name");
+                String location=rs.getString("location");
+                String email=rs.getString("email");
+                String phone=rs.getString("phone");
+                System.out.println("Id: "+carServiceId+"\nname: "+name+"\nlocation: "+location+"\nemail: "+email+"\nphone: "+phone);
+                System.out.println("-------------------------------------");
+            }
+            System.out.println("Select all car services is successful");
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void viewAllRequest(Admin admin) {
+        try{
+            connection=ConnectDatabase.connection();
+            String sql="SELECT * FROM request";
+            ps= connection.prepareStatement(sql);
+            rs= ps.executeQuery();
+            while(rs.next()){
+                int requestId=rs.getInt("request_id");
+                int carId=rs.getInt("car_id");
+                int userId=rs.getInt("user_id");
+                Status status= Status.valueOf(rs.getString("status"));
+                Timestamp createdOn=rs.getTimestamp("createdOn");
+                Timestamp completed=rs.getTimestamp("completedOn");
+                boolean modifyRequest=rs.getBoolean("modified_request");
+                System.out.println("Id: "+requestId+"\ncarId: "+carId+"\nuserId: "+userId+"\nstatus: "+status+"\ncreatedOn: "+createdOn+"\ncompletedOn: "+completed+"\nmodifyRequest: "+modifyRequest);
+            }
+            System.out.println("Select all request is successful");
+        }catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
