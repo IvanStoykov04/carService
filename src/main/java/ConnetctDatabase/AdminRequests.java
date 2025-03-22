@@ -7,10 +7,7 @@ import packageEnum.Status;
 import packageEnum.UserType;
 
 import java.net.ConnectException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Scanner;
 
 public class AdminRequests implements AdminActions {
@@ -64,6 +61,7 @@ public class AdminRequests implements AdminActions {
         try{
             connection=ConnectDatabase.connection();
             String sql="UPDATE services SET price=? WHERE services_id=?";
+            ps= connection.prepareStatement(sql);
             viewAllServices(admin);
             System.out.println("Enter serviceId: ");
             int serviceId= input.nextInt();
@@ -222,7 +220,7 @@ public class AdminRequests implements AdminActions {
     public void editCarService(Admin admin) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="UPDATE carService SET phone WHERE carService_id=?";
+            String sql="UPDATE carService SET phone=? WHERE carService_id=?";
             ps=connection.prepareStatement(sql);
             viewAllCarServices(admin);
             System.out.println("Choose car service: ");
@@ -245,7 +243,7 @@ public class AdminRequests implements AdminActions {
     public void deleteRequest(Admin admin) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="DELETE * FROM request WHERE request_id=?";
+            String sql="DELETE FROM request WHERE request_id=?";
             ps= connection.prepareStatement(sql);
             viewAllRequest(admin);
             System.out.println("Choose request: ");
@@ -334,7 +332,8 @@ public class AdminRequests implements AdminActions {
     public void deleteCar(Admin admin) {
         try{
             connection= ConnectDatabase.connection();
-            String sql="DELETE * FROM car WHERE car_id=?";
+            String sql="DELETE FROM car WHERE car_id=?";
+            ps=connection.prepareStatement(sql);
             viewAllCar(admin);
             System.out.println("Choose car: ");
             int carId= input.nextInt();
@@ -346,11 +345,13 @@ public class AdminRequests implements AdminActions {
         }
     }
 
+
     @Override
     public void editCar(Admin admin) {
         try{
             connection=ConnectDatabase.connection();
             String sql="UPDATE car SET rg_number=? WHERE car_id=?";
+            ps=connection.prepareStatement(sql);
             viewAllCar(admin);
             System.out.println("Choose car: ");
             int carId= input.nextInt();
@@ -361,9 +362,10 @@ public class AdminRequests implements AdminActions {
             ps.execute();
             System.out.println("Update is successful");
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     @Override
     public boolean checkPhone(String phone) {
