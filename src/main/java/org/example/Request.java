@@ -32,6 +32,7 @@ public class Request {
         this.createdOn = createdOn;
         this.completedOn = completedOn;
         this.modifiedRequest = modifiedRequest;
+        listOfServices=new ArrayList<>();
     }
 
     public int getRequestId() {
@@ -107,14 +108,17 @@ public class Request {
         ClientRequests clientRequests=new ClientRequests();
         int choice=1;
         System.out.println("Enter choice of services: ");
+        System.out.println("Enter 0 for exit");
         //преглед на всички възможни услуги в базата
         clientRequests.viewServices(client);
         while(choice!=0){
-            //избор на услуга
             choice= input.nextInt();
-            //връщаме обект услуга и я записваме в списък
-            Service service=clientRequests.getService(client,choice);
-            listOfServices.add(service);
+            if(choice!=0){
+                //избор на услуга
+                //връщаме обект услуга и я записваме в списък
+                Service service=clientRequests.getService(client,choice);
+                listOfServices.add(service);
+            }
         }
     }
 

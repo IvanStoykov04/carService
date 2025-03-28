@@ -30,6 +30,7 @@ public interface AdminActions {
     boolean checkEmail(String email);
     boolean checkPassword(String password);
 
+    /*
     void viewAllServices(Admin admin);
 
     void viewAllCar(Admin admin);
@@ -37,7 +38,7 @@ public interface AdminActions {
     void deleteRequestService(Admin admin,int requestId);
     void viewAllCarServices(Admin admin);
     void viewAllRequest(Admin admin);
-
+*/
 
 
 

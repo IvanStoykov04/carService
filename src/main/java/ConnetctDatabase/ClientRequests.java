@@ -51,16 +51,15 @@ public class ClientRequests implements ClientActions {
     public void viewServices(Client client) {
         try{
             connection=ConnectDatabase.connection();
-            String sql="SELECT * FROM carservice";
+            String sql="SELECT * FROM services";
             ps=connection.prepareStatement(sql);
             rs= ps.executeQuery();
             while(rs.next()){
-                int carServiceId=rs.getInt("carService_id");
-                String carName=rs.getString("name");
-                String location=rs.getString("location");
-                String phone=rs.getString("phone");
-                String email=rs.getString("email");
-                System.out.println("CarId: "+carServiceId+" \nName: "+carName+" \nlocation: "+location+" \nphone: "+phone+" \nemail: "+email+"\n -------------------------------------");
+                int servicesId=rs.getInt("services_id");
+                String name=rs.getString("name");
+                String description=rs.getString("description");
+                Double price=rs.getDouble("price");
+                System.out.println("servicesId: "+servicesId+" \nName: "+name+" \ndescription: "+description+" \nprice: "+price+"\n -------------------------------------");
             }
             System.out.println("Select products is successful");
         }catch (Exception e){
@@ -139,10 +138,10 @@ public class ClientRequests implements ClientActions {
     public void addRequest(Client client) {
         try{
             connection=ConnectDatabase.connection();
+            viewCar(client);
             String sql="INSERT INTO request(car_id,user_id) VALUES (?,?)";
             ps=connection.prepareStatement(sql);
             //Select car
-            viewCar(client);
             System.out.println("Choose a car: ");
             int carId= input.nextInt();
             ps.setInt(1,carId);
@@ -154,6 +153,7 @@ public class ClientRequests implements ClientActions {
             System.out.println("Step 3");
             ////////////////////////////////////////////////////////
             Request request=getRequestFromDatabase();
+            request.addServices(client,input);
             addAllServicesFromRequest(client,request);
             System.out.println("Request is created successfully");
         }catch(Exception e){
@@ -183,17 +183,14 @@ public class ClientRequests implements ClientActions {
     public Request getRequestFromDatabase(){
         try{
             connection=ConnectDatabase.connection();
-            LocalDateTime now = LocalDateTime.now();
-            Timestamp timestamp = Timestamp.valueOf(now);
-            String sql="SELECT * FROM request WHERE createdOn=?";
+            String sql="SELECT * FROM request ORDER BY createdOn DESC LIMIT 1";
             ps=connection.prepareStatement(sql);
-            ps.setTimestamp(1,timestamp);
             rs=ps.executeQuery();
             while(rs.next()){
                 int requestId=rs.getInt("request_id");
                 int carId=rs.getInt("car_id");
                 int userId=rs.getInt("user_id");
-                Status status= Status.valueOf(rs.getString("status"));
+                Status status= Status.valueOf(rs.getString("status").toUpperCase());
                 Timestamp createdOn=rs.getTimestamp("createdOn");
                 Timestamp completedOn=rs.getTimestamp("completedOn");
                 boolean modifiedRequest=rs.getBoolean("modified_request");
