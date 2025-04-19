@@ -17,7 +17,6 @@ public interface ClientActions {
     boolean checkPassword(String password);
     void addRequestServices(Client client, Request request,Service service);
 
-    boolean deleteRequest(Client client,int requestId);
 
 
 }

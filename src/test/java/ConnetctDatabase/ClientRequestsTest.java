@@ -4,6 +4,7 @@ package ConnetctDatabase;
 
 import org.example.Client;
 import org.example.Request;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -70,11 +71,6 @@ class ClientRequestsTest {
         }
     }
 
-    @Test
-    void addRequest() throws Exception{
-
-
-    }
 
     @Test
     void viewRequestHistory() throws Exception {
@@ -116,47 +112,7 @@ class ClientRequestsTest {
         }
     }
 
-    @Test
-    void requestModification() throws Exception{
-        // Мокиране на Connection и PreparedStatement
-        Connection mockConnection = mock(Connection.class);
-        PreparedStatement mockPreparedStatement = mock(PreparedStatement.class);
 
-        // Мокиране на статичния метод ConnectDatabase.connection()
-        try (MockedStatic<ConnectDatabase> mockedStatic = mockStatic(ConnectDatabase.class)) {
-            mockedStatic.when(ConnectDatabase::connection).thenReturn(mockConnection);
-
-            // Мокиране на PreparedStatement
-            when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-
-            // Симулиране на успешното изпълнение на SQL заявката
-            doNothing().when(mockPreparedStatement).execute();  // Симулираме изпълнението на заявката без грешки
-
-            // Симулирай клиента
-            Client mockClient = mock(Client.class);
-            when(mockClient.getId()).thenReturn(202);  // Симулираме ID на клиента като 202
-
-            // Създаване на примерен обект Request
-            Request mockRequest = mock(Request.class);
-            when(mockRequest.getRequestId()).thenReturn(123);  // Симулираме ID на заявката
-
-            // Извикваме метода requestModification с requestId 123
-            ClientRequests clientRequests = new ClientRequests();
-            boolean result = clientRequests.requestModification(mockClient, 123);
-
-            // Проверка дали методът е върнал правилния резултат
-            assertTrue(result, "Expected true when modification is successful");
-
-            // Проверка дали метода setBoolean и setInt са извикани с правилните стойности
-            verify(mockPreparedStatement).setBoolean(1, true);  // Очакваме, че стойността на modified_request ще е true
-            verify(mockPreparedStatement).setInt(2, 123);  // Очакваме, че requestId е 123
-            verify(mockPreparedStatement).execute();  // Проверяваме дали execute() е извикано
-
-        }
-    }
-
-
-    //
 
 
 

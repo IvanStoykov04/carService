@@ -48,6 +48,9 @@ public class Request {
     }
 
     public void setCar_id(int car_id) {
+        if (car_id <= 0) {
+            throw new IllegalArgumentException("Car ID must be positive");
+        }
         this.car_id = car_id;
     }
 

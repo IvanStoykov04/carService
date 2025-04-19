@@ -270,7 +270,7 @@ public class AuthenticationManager implements AuthenticationManagerI {
 
 
 
-
+/*
     public boolean checkEmail(String email){
         String regex="^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
         if(email.matches(regex)){
@@ -280,7 +280,13 @@ public class AuthenticationManager implements AuthenticationManagerI {
         System.out.println("Email is incorrect");
         return  false;
     }
-
+*/
+public boolean checkEmail(String email) {
+    if (email == null || !email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+        throw new IllegalArgumentException("Invalid email");
+    }
+    return true;
+}
 
     public boolean checkPassword(String password){
         String regex="^.{6,}$";

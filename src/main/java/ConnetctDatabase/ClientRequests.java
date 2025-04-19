@@ -186,10 +186,7 @@ public class ClientRequests implements ClientActions {
         }
     }
 
-    @Override
-    public boolean deleteRequest(Client client, int requestId) {
-        return false;
-    }
+
 
     //взимаме заявката която създадохме в дадения момент и връщаме обект от Request за да му добавим после списък с услугите и да извикаме другите два метод addRequestServices,addAllServicesFromRequest
     public Request getRequestFromDatabase(){
