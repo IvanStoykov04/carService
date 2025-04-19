@@ -156,7 +156,15 @@ public class AuthenticationManager implements AuthenticationManagerI {
                 clientMenu(client);
                 break;
             case 4:
-                clientRequests.addCar(client);
+                System.out.println("Enter brand: ");
+                String brand=input.next();
+                System.out.println("Enter model: ");
+                String model=input.next();
+                System.out.println("Enter year: ");
+                int year=input.nextInt();
+                System.out.println("Enter rg number: ");
+                String rgNumber=input.next();
+                clientRequests.addCar(client,brand,model,year,rgNumber);
                 clientMenu(client);
                 break;
             case 5:
@@ -164,7 +172,9 @@ public class AuthenticationManager implements AuthenticationManagerI {
                 clientMenu(client);
                 break;
             case 6:
-                clientRequests.requestModification(client);
+                System.out.println("Enter request Id: ");
+                int requestId=input.nextInt();
+                clientRequests.requestModification(client,requestId);
                 clientMenu(client);
                 break;
             case 7:

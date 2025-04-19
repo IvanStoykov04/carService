@@ -22,7 +22,6 @@ public class ClientRequests implements ClientActions {
     PreparedStatement ps;
     ResultSet rs;
 
-
     //взимаме всички услуги които клиента иска за неговия ввтомобил,връщаме ги като обекти и ги записваме в списъка на дадената поръчка откъдето после ще запълним и междинните таблици
     @Override
     public Service getService(Client client,int serviceId) {
@@ -70,28 +69,28 @@ public class ClientRequests implements ClientActions {
 
 
     @Override
-    public void addCar(Client client) {
+    public boolean addCar(Client client,String brand, String model,int year, String rgNumber) {
+        boolean flag= false;
         try{
             connection=ConnectDatabase.connection();
             String sql="INSERT INTO car (user_id,brand,model,year,rg_number) VALUES(?,?,?,?,?)";
             ps=connection.prepareStatement(sql);
-            System.out.println("Enter brand: ");
-            String brand=input.next();
-            System.out.println("Enter model: ");
-            String model=input.next();
-            System.out.println("Enter year: ");
-            int year=input.nextInt();
-            System.out.println("Enter rg number: ");
-            String rgNumber=input.next();
             ps.setInt(1,client.getId());
             ps.setString(2,brand);
             ps.setString(3,model);
             ps.setInt(4,year);
             ps.setString(5,rgNumber);
             ps.execute();
-            System.out.println("Add car is successful");
+            flag=true;
+            if(flag){
+                System.out.println("Add car is successful");   
+            }else{
+                System.out.println("Error with add car");
+            }
+            return true;
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Error with add car");
+            return false;
         }
     }
 
@@ -135,8 +134,9 @@ public class ClientRequests implements ClientActions {
 
 
     @Override
-    public void addRequest(Client client) {
+    public boolean addRequest(Client client) {
         try{
+            boolean flag=false;
             connection=ConnectDatabase.connection();
             viewCar(client);
             String sql="INSERT INTO request(car_id,user_id) VALUES (?,?)";
@@ -155,9 +155,16 @@ public class ClientRequests implements ClientActions {
             Request request=getRequestFromDatabase();
             request.addServices(client,input);
             addAllServicesFromRequest(client,request);
-            System.out.println("Request is created successfully");
+            flag=true;
+            if(flag){
+                System.out.println("Request is created successfully");
+            }else{
+                System.out.println("Error with add request");
+            }
+            return true;
         }catch(Exception e){
             System.out.println(e.getMessage());
+            return false;
         }
     }
 
@@ -177,6 +184,11 @@ public class ClientRequests implements ClientActions {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean deleteRequest(Client client, int requestId) {
+        return false;
     }
 
     //взимаме заявката която създадохме в дадения момент и връщаме обект от Request за да му добавим после списък с услугите и да извикаме другите два метод addRequestServices,addAllServicesFromRequest
@@ -213,7 +225,7 @@ public class ClientRequests implements ClientActions {
     }
 
     @Override
-    public void viewRequestHistory(Client client) {
+    public boolean viewRequestHistory(Client client) {
         boolean flag=false;
         try{
             connection=ConnectDatabase.connection();
@@ -221,29 +233,35 @@ public class ClientRequests implements ClientActions {
             ps=connection.prepareStatement(sql);
             ps.setInt(1,client.getId());
             rs=ps.executeQuery();
-            while(rs.next()){
-                int requestId=rs.getInt("request_id");
-                int carId=rs.getInt("car_id");
-                int userId=rs.getInt("user_id");
-                Date completedOn=rs.getDate("completedOn");
-                Date createdOn=rs.getDate("createdOn");
-                boolean modifiedRequest=rs.getBoolean("modified_request");
-                String status=rs.getString("status");
-                System.out.println("Request Id: "+requestId
-                        + "\nCar Id: "+carId
-                        +"\nUser Id: "+userId
-                        +"\nCompleted On: "+completedOn
-                        +"\nCreated On: "+createdOn
-                        +"\nModified request: "+modifiedRequest
-                        + "\nStatus: "+status);
+            if(rs!=null) {
+                flag=true;
+                while (rs.next()) {
+                    int requestId = rs.getInt("request_id");
+                    int carId = rs.getInt("car_id");
+                    int userId = rs.getInt("user_id");
+                    Date completedOn = rs.getDate("completedOn");
+                    Date createdOn = rs.getDate("createdOn");
+                    boolean modifiedRequest = rs.getBoolean("modified_request");
+                    String status = rs.getString("status");
+                    System.out.println("Request Id: " + requestId
+                            + "\nCar Id: " + carId
+                            + "\nUser Id: " + userId
+                            + "\nCompleted On: " + completedOn
+                            + "\nCreated On: " + createdOn
+                            + "\nModified request: " + modifiedRequest
+                            + "\nStatus: " + status);
+                }
             }
             if(flag){
                 System.out.println("Select requests is successful");
+                return true;
             }else{
                 System.out.println("Select requests is not successful");
+                return false;
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
+            return false;
         }
 
     }
@@ -252,20 +270,26 @@ public class ClientRequests implements ClientActions {
     //модифицирането на заявката ще бъде направено по телефон.Тоест когато клиент иска да промени или изтрие заявката то той променя полето modifierRequest на true
     //и тогава наш служител ще се свърже с него за да го попита обстойно какъв е проблема и да го разубеди тъй като така губим клиенти
     @Override
-    public void requestModification(Client client) {
+    public boolean requestModification(Client client,int requestId) {
         try{
+            boolean flag=false;
             connection=ConnectDatabase.connection();
             String sql="UPDATE request SET modified_request=? WHERE request_id=?";
             ps=connection.prepareStatement(sql);
-            System.out.println("Enter request Id: ");
-            int requestId=input.nextInt();
             ps.setBoolean(1,true);
             ps.setInt(2,requestId);
             ps.execute();
-            System.out.println("Modified request is successful");
-            System.out.println("Wait for a call");
+            flag=true;
+            if(flag){
+                System.out.println("Modified request is successful");
+                System.out.println("Wait for a call");
+            }else{
+                System.out.println("Error with requestModify");
+            }
+            return true;
         }catch (Exception e){
             System.out.println(e.getMessage());
+            return false;
         }
     }
 
