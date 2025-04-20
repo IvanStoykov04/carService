@@ -55,6 +55,7 @@ public class AuthenticationManager implements AuthenticationManagerI {
         mainMenu();
     }
 
+    /*
     @Override
     public boolean logIn() {
         try{
@@ -85,6 +86,69 @@ public class AuthenticationManager implements AuthenticationManagerI {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+     */
+
+    @Override
+    public boolean logIn(){
+        int attemptCounter = 0;
+
+        while (attemptCounter < 3) {
+            try {
+                connection = ConnectDatabase.connection();
+                String sql = "SELECT * FROM user WHERE email=? AND password=?";
+                ps = connection.prepareStatement(sql);
+
+                System.out.println("Enter email: ");
+                String email = input.next();
+                System.out.println("Enter password: ");
+                String password = input.next();
+
+                ps.setString(1, email);
+                ps.setString(2, password);
+                rs = ps.executeQuery();
+
+                if (rs.next()) {
+                    String role = rs.getString("role");
+
+                    if (role.equals("client")) {
+                        Client client = new Client(
+                                rs.getInt("user_id"),
+                                rs.getString("name"),
+                                rs.getString("email"),
+                                rs.getString("password"),
+                                rs.getString("phone"),
+                                rs.getString("address")
+                        );
+                        listOfUsers.add(client);
+                        clientMenu(client);
+                        return true;
+                    } else if (role.equals("admin")) {
+                        Admin admin = new Admin(
+                                rs.getInt("user_id"),
+                                rs.getString("name"),
+                                rs.getString("email"),
+                                rs.getString("password"),
+                                rs.getString("phone"),
+                                rs.getString("address")
+                        );
+                        listOfUsers.add(admin);
+                        adminMenu(admin);
+                        return true;
+                    }
+                } else {
+                    System.out.println("Invalid email or password. Try again.");
+                    attemptCounter++;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+                return false;
+            }
+        }
+
+        System.out.println("3 failed login attempts reached.");
+        throw new RuntimeException("Maximum login attempts exceeded. Access denied.");
     }
 
     @Override
@@ -282,7 +346,7 @@ public class AuthenticationManager implements AuthenticationManagerI {
     }
 */
 public boolean checkEmail(String email) {
-    if (email == null || !email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+    if (email == null || !email.matches("^[\\w.-]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
         throw new IllegalArgumentException("Invalid email");
     }
     return true;
