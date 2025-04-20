@@ -87,11 +87,10 @@ public class ClientRequests implements ClientActions {
             }else{
                 System.out.println("Error with add car");
             }
-            return true;
         }catch (Exception e){
             System.out.println("Error with add car");
-            return false;
         }
+        return flag;
     }
 
     @Override
